@@ -1,7 +1,7 @@
 package Springlog.Springlog.ConfigSec;
 
-import Springlog.Springlog.Entity.Role;
-import Springlog.Springlog.Entity.User;
+import Springlog.Springlog.domain.Role;
+import Springlog.Springlog.domain.UserDomain;
 import Springlog.Springlog.Repouser.Repouser;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.GrantedAuthority;
@@ -21,15 +21,15 @@ public class UserDetailss implements UserDetailsService {
 
     @Autowired
     // private attribue : private UserRepository userRepository;
-
     Repouser repouser ;  // Upper case 1st letter class
                             // lowcase case package name
-                         // Entity -> domain , repouser -> repository , services -> service , resource : UserResource , config , security
+                         // Entity -> domain , repouser -> repository , services -> service , controleuser -> resource : UserResource , config , security
+
 
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        User user = (User) repouser.findByUsername(username).orElseThrow(()->new UsernameNotFoundException("Username not found"));
+        UserDomain user = (UserDomain) repouser.findByUsername(username).orElseThrow(()->new UsernameNotFoundException("Username not found"));
         return new org.springframework.security.core.userdetails.User(user.getUsername(),user.getPassword(),mapRolesToAuthorities(user.getRoles()));
         }
 

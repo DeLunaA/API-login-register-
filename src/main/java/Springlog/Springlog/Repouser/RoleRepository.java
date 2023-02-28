@@ -1,6 +1,6 @@
 package Springlog.Springlog.Repouser;
 
-import Springlog.Springlog.Entity.Role;
+import Springlog.Springlog.domain.Role;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 

@@ -1,11 +1,12 @@
 package Springlog.Springlog.Services;
 
 
-import Springlog.Springlog.ConfigSec.httpsec;
-import Springlog.Springlog.Entity.Role;
-import Springlog.Springlog.Entity.User;
+import Springlog.Springlog.ConfigSec.JwtService;
+import Springlog.Springlog.domain.Role;
+import Springlog.Springlog.domain.UserDomain;
 import Springlog.Springlog.Repouser.Repouser;
 import Springlog.Springlog.Repouser.RoleRepository;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -15,11 +16,11 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
-import org.springframework.web.bind.annotation.RequestBody;
 
 import java.util.Collections;
 
 @Service
+@RequiredArgsConstructor
 public class Userservice {
     @Autowired
     Repouser repouser ;
@@ -27,13 +28,14 @@ public class Userservice {
     @Autowired
     RoleRepository roleRepository ;
 
-
-
     @Autowired
     PasswordEncoder passwordEncoder ;
 
     @Autowired
     AuthenticationManager authenticationManager ;
+
+    @Autowired
+    JwtService jwtService ;
 
     public Userservice(Repouser repouser, RoleRepository roleRepository, PasswordEncoder passwordEncoder, AuthenticationManager authenticationManager) {
         this.repouser = repouser;
@@ -42,15 +44,13 @@ public class Userservice {
         this.authenticationManager = authenticationManager;
     }
 
-
-
-    public ResponseEntity<String> register(User user) {
+    public ResponseEntity<String> register(UserDomain user) {
 
         if(repouser.findByUsername(user.getUsername()).isPresent()){
             return new ResponseEntity<>("Username is taken", HttpStatus.BAD_REQUEST);
 
         }
-        User usr = new User();
+        UserDomain usr = new UserDomain();
 
         usr.setUsername(user.getUsername());
         usr.setPassword(passwordEncoder.encode(user.getPassword()));
@@ -64,22 +64,22 @@ public class Userservice {
 
     }
 
-    public ResponseEntity<?> login(User user) {
+    public ResponseEntity<?> login(UserDomain user) {
 
         if(repouser.findByUsername(user.getUsername()).isPresent()){
             Authentication authentication = authenticationManager.authenticate(
                     new UsernamePasswordAuthenticationToken(user.getUsername(),
                             user.getPassword()));
             SecurityContextHolder.getContext().setAuthentication(authentication);
-            return new ResponseEntity<>("Signed successfully",HttpStatus.OK);
+            String token = jwtService.generateToken(user);
 
-        }else   {
-
-        return new ResponseEntity<>("Invalid", HttpStatus.BAD_REQUEST);
+            return new ResponseEntity<>("token : " + token  ,HttpStatus.OK);
+        }else {
+        return new ResponseEntity<>("Invalid credential ", HttpStatus.UNAUTHORIZED);
+    }
     }
 
 
 
 
-
-}}
+}

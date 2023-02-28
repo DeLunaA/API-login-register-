@@ -1,4 +1,4 @@
-package Springlog.Springlog.Entity;
+package Springlog.Springlog.domain;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;

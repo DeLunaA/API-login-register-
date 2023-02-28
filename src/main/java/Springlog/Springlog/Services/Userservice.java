@@ -73,7 +73,7 @@ public class Userservice {
             SecurityContextHolder.getContext().setAuthentication(authentication);
             String token = jwtService.generateToken(user);
 
-            return new ResponseEntity<>("token : " + token  ,HttpStatus.OK);
+            return new ResponseEntity<>(token ,HttpStatus.OK);
         }else {
         return new ResponseEntity<>("Invalid credential ", HttpStatus.UNAUTHORIZED);
     }

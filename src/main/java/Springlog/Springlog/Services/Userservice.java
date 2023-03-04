@@ -6,6 +6,7 @@ import Springlog.Springlog.domain.Role;
 import Springlog.Springlog.domain.UserDomain;
 import Springlog.Springlog.Repouser.Repouser;
 import Springlog.Springlog.Repouser.RoleRepository;
+import Springlog.Springlog.dto.AuthResponseDto;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -64,6 +65,8 @@ public class Userservice {
 
     }
 
+
+
     public ResponseEntity<?> login(UserDomain user) {
 
         if(repouser.findByUsername(user.getUsername()).isPresent()){
@@ -73,9 +76,9 @@ public class Userservice {
             SecurityContextHolder.getContext().setAuthentication(authentication);
             String token = jwtService.generateToken(user);
 
-            return new ResponseEntity<>(token ,HttpStatus.OK);
+            return new ResponseEntity<>(new AuthResponseDto(token),HttpStatus.OK);
         }else {
-        return new ResponseEntity<>("Invalid credential ", HttpStatus.UNAUTHORIZED);
+        return new ResponseEntity<>("Invalid credential", HttpStatus.UNAUTHORIZED);
     }
     }
 

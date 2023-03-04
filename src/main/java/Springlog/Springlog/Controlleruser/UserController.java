@@ -7,11 +7,11 @@ import Springlog.Springlog.Services.Userservice;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/api")
@@ -48,6 +48,29 @@ public class UserController {
     }
 
 
+    @GetMapping("/z")
+    public String z(){
+
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+
+        if (authentication != null && authentication.isAuthenticated()) {
+            for (GrantedAuthority authority : authentication.getAuthorities()) {
+                if (authority.getAuthority().equals("ADMIN")) {
+                    return "ADMIN";
+                }else if (authority.getAuthority().equals("USER")) {
+                    authority.getAuthority();
+                    return "USER";
+                }
+                else {
+                    return "No auth";
+                }
+            }
+
+
+        }
+
+        return "welcome u have the permission to join here ";
+    }
 
     /*class LoginVm
     {
